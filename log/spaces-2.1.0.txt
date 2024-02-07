@@ -1,0 +1,1 @@
+Configuration file read error: /benthos.yaml: yaml: line 8: could not find expected ':'

@@ -1,0 +1,9 @@
+input:
+  http_server:
+    path: /poc
+output:
+  broker:
+    outputs:
+      - stdout:
+          codec: lines
+      - sync_response: {}

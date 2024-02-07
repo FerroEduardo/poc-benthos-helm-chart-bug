@@ -1,0 +1,24 @@
+http:
+  address: 0.0.0.0:4195
+  cors:
+    enabled: false
+  debug_endpoints: false
+  enabled: true
+  root_path: /benthos
+"input:
+  http_server:
+    path: /poc
+   
+pipeline:
+  processors:
+    - noop:
+  {}
+    
+output:
+  broker:
+    outputs:
+      - stdout:
+          codec: lines
+
+  \     - sync_response: {}
+"

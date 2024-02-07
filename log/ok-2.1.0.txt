@@ -1,0 +1,1 @@
+Configuration file read error: /benthos.yaml: yaml: line 7: did not find expected key

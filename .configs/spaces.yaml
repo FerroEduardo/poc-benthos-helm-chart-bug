@@ -1,0 +1,14 @@
+input:
+  http_server:
+    pa
+   
+pipeline:
+  processors:
+    - noop: {}
+    
+output:
+  broker:
+    outputs:
+      - stdout:
+          codec: lines
+      - sync_response: {}
