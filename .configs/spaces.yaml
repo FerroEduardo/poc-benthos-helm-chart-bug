@@ -1,6 +1,6 @@
 input:
   http_server:
-    pa
+    path: /poc
    
 pipeline:
   processors:

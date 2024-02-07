@@ -2,8 +2,6 @@ configs=("spaces" "ok")
 versions=("2.0.1" "2.1.0" "2.1.1")
 
 [ -d stdout ] || mkdir stdout
-[ -d configmap ] || mkdir configmap
-[ -d log ] || mkdir log
 
 # Validate files
 docker run --rm \
@@ -16,8 +14,6 @@ docker run --rm \
 echo Configs are valid
 
 rm -rf stdout/*
-rm -rf configmap/*
-rm -rf logs/*
 
 configs=()
 cd .configs
@@ -27,6 +23,12 @@ do
     configs+=($config)
 done
 cd ..
+
+
+minikube status || {
+    echo Starting minikube
+    minikube start
+}
 
 for config in ${configs[@]}; do
     for version in ${versions[@]}; do

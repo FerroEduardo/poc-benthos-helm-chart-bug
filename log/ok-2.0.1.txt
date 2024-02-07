@@ -1,3 +1,0 @@
-level=info msg="Running main config from specified file" @service=benthos benthos_version=v4.24.0 path=/benthos.yaml
-level=info msg="Listening for HTTP requests at: http://0.0.0.0:4195" @service=benthos
-level=info msg="Launching a benthos instance, use CTRL+C to close" @service=benthos

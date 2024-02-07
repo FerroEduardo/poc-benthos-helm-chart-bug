@@ -63,4 +63,4 @@ The bugs were observed in versions:
 
 ## Tests
 
-A test pipeline is described at [poc_benthos.sh](poc_benthos.sh) and the outputs can be found at [configmap/](configmap/), [stdout/](stdout/) and [log/](log/) directories.
+A test pipeline is described at [poc_benthos.sh](poc_benthos.sh) and the outputs can be found at [stdout/](stdout/).

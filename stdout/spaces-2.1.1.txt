@@ -1,32 +1,64 @@
-benthos-helm-chart version 2.1.1
+install.go:200: [debug] Original chart version: "2.1.1"
+install.go:217: [debug] CHART PATH: /home/eduardo/.cache/helm/repository/benthos-2.1.1.tgz
 
-Create namespace
-namespace/poc-chart created
-
-Add helm repo
-"benthos" already exists with the same configuration, skipping
-
-Create release
-Release "benthos-simple-service" does not exist. Installing it now.
 NAME: benthos-simple-service
-LAST DEPLOYED: Wed Feb  7 10:37:24 2024
+LAST DEPLOYED: Wed Feb  7 14:08:29 2024
 NAMESPACE: poc-chart
-STATUS: deployed
+STATUS: pending-install
 REVISION: 1
 TEST SUITE: None
-NOTES:
-1. Get the application URL by running these commands:
-  export POD_NAME=$(kubectl get pods --namespace poc-chart -l "app.kubernetes.io/name=benthos,app.kubernetes.io/instance=benthos-simple-service" -o jsonpath="{.items[0].metadata.name}")
-  export CONTAINER_PORT=$(kubectl get pod --namespace poc-chart $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl --namespace poc-chart port-forward $POD_NAME 8080:$CONTAINER_PORT
-error: timed out waiting for the condition on pods/benthos-simple-service-5f5c44cdc-9mpdf
+USER-SUPPLIED VALUES:
+config: "input:\n  http_server:\n    path: /poc\n   \npipeline:\n  processors:\n    -
+  noop: {}\n    \noutput:\n  broker:\n    outputs:\n      - stdout:\n          codec:
+  lines\n      - sync_response: {}\n"
 
-Logs ------------------------
-Configuration file read error: /benthos.yaml: yaml: line 8: could not find expected ':'
-------------------------
-
-ConfigMap ------------------------
+COMPUTED VALUES:
+affinity: {}
+args: []
+autoscaling:
+  enabled: false
+  maxReplicas: 12
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 80
+        type: Utilization
+    type: Resource
+  minReplicas: 1
+command: []
+commonLabels: {}
+config: "input:\n  http_server:\n    path: /poc\n   \npipeline:\n  processors:\n    -
+  noop: {}\n    \noutput:\n  broker:\n    outputs:\n      - stdout:\n          codec:
+  lines\n      - sync_response: {}\n"
+deployment:
+  annotations: {}
+  livenessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /ping
+      port: http
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 2
+  podAnnotations: {}
+  podLabels: {}
+  readinessProbe:
+    failureThreshold: 1
+    httpGet:
+      path: /ready
+      port: http
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 2
+  replicaCount: 1
+  rolloutConfigMap: true
+  terminationGracePeriodSeconds: 60
+env: []
+envFrom: []
+extraVolumeMounts: []
+extraVolumes: []
+fullnameOverride: ""
 http:
   address: 0.0.0.0:4195
   cors:
@@ -34,29 +66,192 @@ http:
   debug_endpoints: false
   enabled: true
   root_path: /benthos
-"input:
-  http_server:
-    path: /poc
-   
-pipeline:
-  processors:
-    - noop:
-  {}
+image:
+  pullPolicy: IfNotPresent
+  repository: jeffail/benthos
+  tag: ""
+imagePullSecrets: []
+ingress:
+  annotations: {}
+  className: ""
+  enabled: false
+  hosts: []
+  tls: []
+initContainers: []
+nameOverride: ""
+nodeSelector: {}
+podDisruptionBudget:
+  enabled: false
+podSecurityContext: {}
+resources: {}
+securityContext: {}
+service:
+  extraPorts: null
+  name: http
+  port: 80
+  protocol: TCP
+  targetPort: http
+  type: ClusterIP
+serviceAccount:
+  annotations: {}
+  create: true
+  name: ""
+serviceMonitor:
+  enabled: false
+  interval: 10s
+  scheme: http
+streams:
+  api:
+    enable: true
+  enabled: false
+  streamsConfigMap: ""
+tolerations: []
+topologySpreadConstraints: []
+updateStrategy: {}
+watch: false
+
+HOOKS:
+MANIFEST:
+---
+# Source: benthos/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: benthos-simple-service
+  labels:
+    helm.sh/chart: benthos-2.1.1
+    app.kubernetes.io/name: benthos
+    app.kubernetes.io/instance: benthos-simple-service
+    app.kubernetes.io/version: "4.24.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: benthos/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: benthos-simple-service-config
+  namespace: poc-chart
+  labels:
+    helm.sh/chart: benthos-2.1.1
+    app.kubernetes.io/name: benthos
+    app.kubernetes.io/instance: benthos-simple-service
+    app.kubernetes.io/version: "4.24.0"
+    app.kubernetes.io/managed-by: Helm
     
-output:
-  broker:
-    outputs:
-      - stdout:
-          codec: lines
+data:
+  benthos.yaml: |
+    http:
+      address: 0.0.0.0:4195
+      cors:
+        enabled: false
+      debug_endpoints: false
+      enabled: true
+      root_path: /benthos
+    "input:\n  http_server:\n    path: /poc\n   \npipeline:\n  processors:\n    - noop:
+      {}\n    \noutput:\n  broker:\n    outputs:\n      - stdout:\n          codec: lines\n
+      \     - sync_response: {}\n"
+---
+# Source: benthos/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: benthos-simple-service
+  labels:
+    helm.sh/chart: benthos-2.1.1
+    app.kubernetes.io/name: benthos
+    app.kubernetes.io/instance: benthos-simple-service
+    app.kubernetes.io/version: "4.24.0"
+    app.kubernetes.io/managed-by: Helm
+    
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: benthos
+    app.kubernetes.io/instance: benthos-simple-service
+---
+# Source: benthos/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: benthos-simple-service
+  labels:
+    helm.sh/chart: benthos-2.1.1
+    app.kubernetes.io/name: benthos
+    app.kubernetes.io/instance: benthos-simple-service
+    app.kubernetes.io/version: "4.24.0"
+    app.kubernetes.io/managed-by: Helm
+    
+  annotations:
+    {}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: benthos
+      app.kubernetes.io/instance: benthos-simple-service
+  template:
+    metadata:
+      annotations:
+        checksum/config: 9a1a8be53a6c94f5b8af66745713d1592ecb0b29fe272f429d4a76a7b68b9834
+      labels:
+        app.kubernetes.io/name: benthos
+        app.kubernetes.io/instance: benthos-simple-service
+    spec:
+      serviceAccountName: benthos-simple-service
+      securityContext:
+        {}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: benthos
+          securityContext:
+            {}
+          image: "jeffail/benthos:4.24.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - "-c"
+            - "/benthos.yaml"  
+          ports:
+            - name: http
+              containerPort: 4195
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ping
+              port: http
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /ready
+              port: http
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          env:
+            []
+          resources:
+            {}
+          volumeMounts:
+            - name: config
+              mountPath: "/benthos.yaml"
+              subPath: "benthos.yaml"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: benthos-simple-service-config
 
-  \     - sync_response: {}
-"
-------------------------
-
-Teardown ------------------------
-
-Delete release
-release "benthos-simple-service" uninstalled
-
-Delete namespace
-namespace "poc-chart" deleted
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace poc-chart -l "app.kubernetes.io/name=benthos,app.kubernetes.io/instance=benthos-simple-service" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace poc-chart $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace poc-chart port-forward $POD_NAME 8080:$CONTAINER_PORT
