@@ -2,7 +2,8 @@
 
 ## Bugs
 
-1. A `-` is inserted in ConfigMap when replacing the custom config file by the helm template, making unreadable for Benthos
+> Both bugs bellow use `--set-file config=./path/config.yaml` to set the config file
+1. A `-` is inserted in ConfigMap when replacing the config file by the helm template, making unreadable for Benthos
     - <details>
         <summary>Example</summary>
         
@@ -28,7 +29,7 @@
         ```
     </details>
 
-2. Custom config files inserted using `--set-file config=./path/config.yaml` are converted to a raw string instead of being converted to YAML
+2. Custom config files that have **any extra space or blank line** are are converted to a raw string instead of being converted to YAML
     - <details>
         <summary>Example</summary>
 
@@ -46,9 +47,8 @@
         ```
     </details>
 
-The bugs were observed in versions:
-- 2.1.0
-- 2.1.1
+- The bugs were observed in versions in `2.1.0` and `2.1.1`.
+- The unit tests (configuration_test.yaml) also fail if the bug #<!-- -->2 is reproduced
 
 ## Environment
 
